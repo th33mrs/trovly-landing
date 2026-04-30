@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trovly - AI Job Intelligence</title>
+<meta name="description" content="Find jobs you'd actually be great at. Trovly uses AI to match postings against your resume by meaning, not keywords.">
+<meta name="theme-color" content="#0d1117">
+<meta property="og:title" content="Trovly - AI Job Intelligence">
+<meta property="og:description" content="Find jobs you'd actually be great at. AI-powered job scanner that matches by meaning, not keywords.">
+<meta property="og:url" content="https://trovlyai.us">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold-300: #fde047;
+    --gold-500: #fbbf24;
+    --amber-500: #f59e0b;
+    --coral-500: #f97316;
+    --pink-500: #ec4899;
+
+    --night-900: #0d1117;
+    --night-800: #161b22;
+    --night-600: #2d2d44;
+
+    --paper: #f8fafc;
+    --paper-muted: #cbd5e1;
+    --paper-faint: #94a3b8;
+
+    --grad-sunset: linear-gradient(135deg, #fde047 0%, #fbbf24 30%, #f97316 65%, #ec4899 100%);
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 8px;
+    background: var(--gold-500);
+    color: var(--night-900);
+    padding: 8px 16px;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 8px;
+    z-index: 1000;
+  }
+  .skip-link:focus { top: 8px; }
+
+  html, body {
+    background: var(--night-900);
+    color: var(--paper);
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+  }
+
+  a:focus-visible, button:focus-visible {
+    outline: 3px solid var(--gold-300);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  nav.site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13, 17, 23, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--night-600);
+  }
+
+  nav.site-nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--paper);
+    text-decoration: none;
+  }
+
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    background: var(--grad-sunset);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--night-900);
+    font-weight: 700;
+    font-size: 20px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-links a {
+    color: var(--paper-muted);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--paper); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: transform 0.15s, box-shadow 0.2s;
+    line-height: 1;
+  }
+
+  .btn:hover { transform: translateY(-1px); }
+
+  .btn-primary {
+    background: var(--grad-sunset);
+    color: var(--night-900);
+    box-shadow: 0 4px 14px rgba(251, 191, 36, 0.25);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--paper);
+    border: 1.5px solid var(--paper-muted);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold-500);
+    color: var(--gold-500);
+  }
+
+  .hero {
+    padding: 120px 0 100px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(ellipse at center, rgba(251, 191, 36, 0.15) 0%, rgba(236, 72, 153, 0.05) 40%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero > * { position: relative; z-index: 1; }
+
+  .badge {
+    display: inline-block;
+    padding: 8px 16px;
+    background: rgba(251, 191, 36, 0.12);
+    color: var(--gold-300);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 28px;
+  }
+
+  .hero h1 {
+    font-size: clamp(40px, 6vw, 68px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 .accent {
+    background: var(--grad-sunset);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero p {
+    font-size: 19px;
+    color: var(--paper-muted);
+    max-width: 640px;
+    margin: 0 auto 40px;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .hero-note {
+    font-size: 13px;
+    color: var(--paper-faint);
+    margin-top: 24px;
+  }
+
+  section { padding: 100px 0; }
+
+  section h2 {
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  section .subtitle {
+    text-align: center;
+    color: var(--paper-muted);
+    max-width: 600px;
+    margin: 0 auto 56px;
+    font-size: 17px;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .compare-card {
+    padding: 32px 28px;
+    border-radius: 16px;
+    border: 1px solid var(--night-600);
+  }
+
+  .compare-card.bad {
+    background: var(--night-800);
+  }
+
+  .compare-card.good {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0%, rgba(236, 72, 153, 0.08) 100%);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+  }
+
+  .compare-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--paper-faint);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  .compare-card.good .compare-label {
+    color: var(--gold-300);
+  }
+
+  .compare-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--paper);
+  }
+
+  .compare-card p {
+    color: var(--paper-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .feature {
+    padding: 28px;
+    background: var(--night-800);
+    border: 1px solid var(--night-600);
+    border-radius: 16px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .feature:hover {
+    border-color: var(--gold-500);
+    transform: translateY(-2px);
+  }
+
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--grad-sunset);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--night-900);
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 18px;
+  }
+
+  .feature h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--paper);
+  }
+
+  .feature p {
+    color: var(--paper-muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    padding: 36px 28px;
+    background: var(--night-800);
+    border: 1px solid var(--night-600);
+    border-radius: 18px;
+    position: relative;
+    transition: transform 0.2s;
+  }
+
+  .pricing-card:hover { transform: translateY(-4px); }
+
+  .pricing-card.featured {
+    border: 2px solid var(--gold-500);
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.06) 0%, rgba(236, 72, 153, 0.06) 100%);
+  }
+
+  .pricing-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--grad-sunset);
+    color: var(--night-900);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .pricing-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--paper);
+  }
+
+  .pricing-price {
+    font-size: 44px;
+    font-weight: 700;
+    margin: 8px 0 28px;
+    letter-spacing: -0.02em;
+    color: var(--paper);
+  }
+
+  .pricing-price small {
+    font-size: 15px;
+    color: var(--paper-muted);
+    font-weight: 400;
+  }
+
+  .pricing-features {
+    list-style: none;
+    margin: 0 0 28px;
+  }
+
+  .pricing-features li {
+    padding: 8px 0;
+    color: var(--paper-muted);
+    font-size: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .pricing-features li::before {
+    content: "✓";
+    color: var(--gold-500);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .pricing-card .btn {
+    width: 100%;
+  }
+
+  .final-cta {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+    padding: 100px 0;
+    border-top: 1px solid var(--night-600);
+    border-bottom: 1px solid var(--night-600);
+  }
+
+  footer {
+    padding: 48px 0;
+    text-align: center;
+    color: var(--paper-faint);
+    font-size: 14px;
+  }
+
+  footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+
+  footer a {
+    color: var(--paper-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  footer a:hover { color: var(--gold-500); }
+
+  @media (max-width: 768px) {
+    .nav-links a:not(.btn) { display: none; }
+    .hero { padding: 80px 0 70px; }
+    section { padding: 70px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .btn:hover, .feature:hover, .pricing-card:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<nav class="site-nav" aria-label="Main navigation">
+  <div class="container">
+    <a href="/" class="logo" aria-label="Trovly home">
+      <div class="logo-mark" aria-hidden="true">T</div>
+      <span>Trovly</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://github.com/th33mrs/TrovlyAI" rel="noopener">GitHub</a>
+      <a href="https://trovlyai.streamlit.app" class="btn btn-primary">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="container">
+      <div class="badge">AI-POWERED JOB SEARCH</div>
+      <h1 id="hero-heading">Find jobs you'd <span class="accent">actually be great at</span></h1>
+      <p>Trovly scans 13+ job boards and uses AI to match postings against your resume by meaning, not keywords. Stop wasting hours on jobs that don't fit.</p>
+      <div class="hero-cta">
+        <a href="https://trovlyai.streamlit.app" class="btn btn-primary" aria-label="Start using Trovly for free">Start free</a>
+        <a href="#how" class="btn btn-secondary">See how it works</a>
+      </div>
+      <p class="hero-note">No credit card. 5 free scans every month.</p>
+    </div>
+  </section>
+
+  <section id="how" style="background: var(--night-800);" aria-labelledby="how-heading">
+    <div class="container">
+      <h2 id="how-heading">How Trovly is different</h2>
+      <p class="subtitle">Other tools do keyword matching. Trovly understands what you actually do.</p>
+      <div class="compare-grid">
+        <article class="compare-card bad" aria-label="Other tools approach">
+          <div class="compare-label">Other tools</div>
+          <h3>Keyword matching</h3>
+          <p>Misses jobs where the words don't match exactly, even when the work is identical. "Built CI/CD pipelines" doesn't match "infrastructure automation" — even though they're the same skill.</p>
+        </article>
+        <article class="compare-card good" aria-label="Trovly approach">
+          <div class="compare-label">Trovly</div>
+          <h3>Semantic understanding</h3>
+          <p>Reads job descriptions like a human. Understands relationships, synonyms, and context. Matches you to roles you'd genuinely fit, even when the vocabulary differs.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" aria-labelledby="features-heading">
+    <div class="container">
+      <h2 id="features-heading">Built for the modern job search</h2>
+      <p class="subtitle">Every feature solves a specific frustration in finding work.</p>
+      <div class="features-grid">
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">S</div>
+          <h3>Auto-scan job boards</h3>
+          <p>Greenhouse, Lever, Ashby, Remotive, Himalayas, We Work Remotely — 13 sources covering thousands of companies.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">T</div>
+          <h3>Resume tailor</h3>
+          <p>Paste any job description. See which of your bullet points match strongly, moderately, or not at all. Plus skill gaps.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">R</div>
+          <h3>Role suggester</h3>
+          <p>93 roles across 19 industries. Trovly reads your resume and suggests jobs you might not have considered.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">A</div>
+          <h3>Discord and email alerts</h3>
+          <p>Get notified the moment a great match drops. No more checking job boards five times a day.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">D</div>
+          <h3>Analytics dashboard</h3>
+          <p>Track applications, see your match score distribution, export to CSV. Know what's working.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">P</div>
+          <h3>Privacy first</h3>
+          <p>Your resume, your data. Never sold, never shared. Full open-source code on GitHub if you want to self-host.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" style="background: var(--night-800);" aria-labelledby="pricing-heading">
+    <div class="container">
+      <h2 id="pricing-heading">Simple pricing</h2>
+      <p class="subtitle">Start free. Upgrade when you're ready.</p>
+      <div class="pricing-grid" role="list">
+        <article class="pricing-card" role="listitem" aria-label="Free plan">
+          <h3>Free</h3>
+          <div class="pricing-price"><span aria-label="Zero dollars">$0</span></div>
+          <ul class="pricing-features" aria-label="Free plan features">
+            <li>5 scans per month</li>
+            <li>5 resume analyses</li>
+            <li>4 job sources</li>
+            <li>Discord alerts</li>
+            <li>CSV export</li>
+          </ul>
+          <a href="https://trovlyai.streamlit.app" class="btn btn-secondary" aria-label="Start with the free plan">Start free</a>
+        </article>
+        <article class="pricing-card featured" role="listitem" aria-label="Pro plan, most popular">
+          <div class="pricing-badge">Most popular</div>
+          <h3>Pro</h3>
+          <div class="pricing-price"><span aria-label="Twelve dollars per month">$12<small>/month</small></span></div>
+          <ul class="pricing-features" aria-label="Pro plan features">
+            <li>Unlimited scans</li>
+            <li>Unlimited tailoring</li>
+            <li>All 13+ sources</li>
+            <li>Saved JD library</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="https://trovlyai.streamlit.app" class="btn btn-primary" aria-label="Get the Pro plan">Get Pro</a>
+        </article>
+        <article class="pricing-card" role="listitem" aria-label="Power plan">
+          <h3>Power</h3>
+          <div class="pricing-price"><span aria-label="Twenty-nine dollars per month">$29<small>/month</small></span></div>
+          <ul class="pricing-features" aria-label="Power plan features">
+            <li>Everything in Pro</li>
+            <li>AI cover letters</li>
+            <li>Interview question prep</li>
+            <li>Google Sheets sync</li>
+            <li>API access</li>
+          </ul>
+          <a href="https://trovlyai.streamlit.app" class="btn btn-secondary" aria-label="Get the Power plan">Get Power</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta" aria-labelledby="cta-heading">
+    <div class="container">
+      <h2 id="cta-heading">Built by an engineer for everyone job hunting</h2>
+      <p class="subtitle">Trovly was built because manually checking job boards is broken. It's free to start, and your data is always yours.</p>
+      <a href="https://trovlyai.streamlit.app" class="btn btn-primary" style="font-size: 17px; padding: 16px 36px;">Start scanning free</a>
+    </div>
+  </section>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="container">
+    <div class="footer-links">
+      <a href="https://github.com/th33mrs/TrovlyAI" rel="noopener">GitHub</a>
+      <a href="https://trovlyai.streamlit.app">App</a>
+      <a href="mailto:hello@trovlyai.us">Contact</a>
+    </div>
+    <p>© 2026 Trovly. Built with care.</p>
+  </div>
+</footer>
+
+</body>
+</html>
